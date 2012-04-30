@@ -1,11 +1,10 @@
 (function($){
-
     $.fn.yamislider = function(options) {
+        var bannerContainer = $(this);
+        var banners = $(this).children('a');
 
-        // Debug
-        function d(name, value) {
-            console.log(name, value);
-        }
+
+       // banners.get(1.hide();
 
 
         options = $.extend({
@@ -13,45 +12,92 @@
         }, options);
 
 
-        var banners = this;
-        banners.hide();
+
+        bannerContainer.prepend('<span class="prev_element">&lt;</span>');
+
+
+        bannerContainer.append('<span class="next_element">&gt;</span>');
+
+        bannerContainer.append('<div class="slider_all_navigation"></div>');
+
+        for(var i=0; i<banners.length; i++) {
+            d('banners i', banners[i]);
+            var visible_index = i+1;
+            $('.slider_all_navigation').append('<span>'+ visible_index +'</span>');
+        }
+
+
+
+        // Element which need show first
+        if (options.firstBanner) {
+            banners.not(options.firstBanner).hide();
+
+
+            var indexStart = $(options.firstBanner).index();
+
+
+            d('start inde', indexStart);
+            d('start el', $($('.slider_all_navigation span').get(indexStart-1)).css('font-weight', 'bold'));
 
 
 
 
 
-        d('banners ', banners);
+            //banners.hide();
+        }
+        else {
+            banners.not(':first').hide();
+        }
+
+
+        //d('banners.length', banners.length);
+
+
+
+
+
+
+        /*
+        banners.each(function(index, element) {
+            d('index', index);
+            d('element', element);
+            d('this', this);
+        });
+        */
+
+
+
+
+
+
+
+        //bannerContainer.append('<div></div>');
 
 
         var Interval = setInterval(rotation, 2*1000, banners);
-
-
-
-
-
-
         //setTimeout("rotation('test')",10);
 
 
 
+        d('banners: ', banners);
+
         function rotation(b) {
+            // reset
+            b.hide();
+            $('.slider_all_navigation span').css('font-weight', 'normal');
 
-
-            b.each(function(i){
-                //$(".slyshow:eq("+i+")").css({"margin-left":""+(slykoef * i)+"0px","z-index":i});
-                var elem = $(this);
-                elem.hide();
-            });
-
-
-
-            d('options', options);
-
+            //$('.slider_navigation span')
             var randomIndex = Math.floor(Math.random() * (banners.length - 0) + 0);
+
             //d ('element'+randomIndex, banners.get(randomIndex));
 
+            $(b[randomIndex]).show();
 
-            b.get(randomIndex).show();
+
+            d('img', b[randomIndex]);
+            d('span navi', $('.slider_all_navigation span').get(randomIndex));
+
+            $($('.slider_all_navigation span').get(randomIndex)).css('font-weight', 'bold');
 
 
 
@@ -61,13 +107,96 @@
             //    $(".slyshow:eq("+ret+")").trigger("mouseover");
 
             //alert('triggerclick');
-
-            console.log('rotation called');
         }
+
+
+
+        function allNavigation () {
+
+
+        }
+
+
+        $('.slider_all_navigation span').click(function() {
+            clearInterval(Interval);
+            var index = $(this).index();
+
+            $('.slider_all_navigation span').css('font-weight', 'normal');
+            banners.hide();
+
+            $(this).css('font-weight', 'bold');
+            $(banners[index]).show();
+
+
+
+
+
+            setTimeout(Interval = setInterval(rotation, 2*1000, banners), 5000);
+
+        });
+
+        $('.prev_element').click(function() {
+            clearInterval(Interval);
+            var indexCurrent = bannerContainer.children('a:visible').index()-1;
+            var indexPrev = indexCurrent-1;
+            var indexNext = indexCurrent+1;
+
+
+            if (indexCurrent <= 0) {
+                indexPrev = 0;
+            }
+            if (indexCurrent >= banners.length) {
+                indexNext = banners.length ;
+            }
+
+            d('indexPrev', indexPrev);
+            d('indexNext', indexNext);
+
+            $('.slider_all_navigation span').css('font-weight', 'normal');
+            banners.hide();
+
+            $(banners[indexPrev]).show();
+            $($('.slider_all_navigation span').get(indexPrev)).css('font-weight', 'bold');
+
+
+
+            setTimeout(Interval = setInterval(rotation, 2*1000, banners), 5000);
+            d('bannerContainer', bannerContainer);
+            d('visible', indexCurrent);
+        });
+
+
+
+        $('.next_element').click(function() {
+            clearInterval(Interval);
+            var indexCurrent = bannerContainer.children('a:visible').index()-1;
+            var indexNext = indexCurrent+1;
+
+            if (indexCurrent >= banners.length-1) {
+                indexNext = banners.length-1;
+            }
+            d('banners.length', banners.length);
+            d('indexNext', indexNext);
+            d('indexCurrent', indexCurrent);
+
+            $('.slider_all_navigation span').css('font-weight', 'normal');
+            banners.hide();
+
+            $(banners[indexNext]).show();
+            $($('.slider_all_navigation span').get(indexNext)).css('font-weight', 'bold');
+
+
+            setTimeout(Interval = setInterval(rotation, 2*1000, banners), 5000);
+            d('bannerContainer', bannerContainer);
+            d('visible', indexCurrent);
+        });
+
+
 
 
         //alert(myInterval);
 
+        /*
         var bannersArr = new Array();
         var count = 0;
 
@@ -85,8 +214,15 @@
 
         console.log('banners', bannersArr);
 
+        */
+
+        // Debug
+        function d(name, value) {
+            console.log(name, value);
+        }
 
     };
+
 })(jQuery);
 
 

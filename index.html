@@ -20,11 +20,11 @@
         <img alt="" title="" src="images/img1.png" width="1000" height="230" border="0">
     </a>
 
-    <a href="" >
+    <a  href="" >
         <img alt="" title="" src="images/img2.png" width="1000" height="230" border="0">
     </a>
 
-    <a href="" >
+    <a id="first_banner" href="" >
         <img alt="" title="" src="images/img3.png" width="1000" height="230" border="0">
     </a>
 
@@ -39,7 +39,10 @@
 
 
 
-$('#slider a').yamislider({background: "#fce"});
+$('#slider').yamislider({
+    background: "#fce",
+    firstBanner: '#first_banner' // selector which need show first
+});
 </script>
 
 </body>
