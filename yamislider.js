@@ -1,5 +1,13 @@
+// TODO
+/*
+Create  clean interval for mouse over on banner
+Create auto define width each element
+*/
+
+
 (function($){
     $.fn.yamislider = function(options) {
+
         var bannerContainer = $(this);
         // TODO Fix two call children()
         var banners = $(this).children().children('a');
@@ -9,25 +17,35 @@
 
 
         d('banners: ', banners);
-
-       // banners.get(1.hide();
+        // banners.get(1.hide();
 
 
         options = $.extend({
             background: 'red'
 
-
-
         }, options);
 
 
 
+        bannerContainer.prepend('<div class="sliders_navigation"></div>');
+        bannerContainer.prepend('<span class="next_element">&gt;</span>');
         bannerContainer.prepend('<span class="prev_element">&lt;</span>');
 
 
-        bannerContainer.append('<span class="next_element">&gt;</span>');
 
-        bannerContainer.append('<div class="sliders_navigation"></div>');
+
+
+        $(this).css('margin', '0');
+        $(this).css('padding', '0');
+        $(this).css('position', 'relative');
+        $(this).css('overflow', 'hidden');
+
+
+        $(this).children('.slider_wrap').css('white-space', 'nowrap'); // TODO May using block element
+        $(this).children('.slider_wrap').css('position', 'absolute');
+
+        $(this).children('.sliders_navigation').css('position', 'absolute');
+        $(this).children('.sliders_navigation').css('z-index', '2');
 
         for(var i=0; i<banners.length; i++) {
             d('banners i', banners[i]);
@@ -59,10 +77,13 @@
             //banners.not(':first').hide();
         }
 
-
+        bannerPosition = -(indexStart * bannerWidth)
+        $('.slider_wrap').animate({
+            left: bannerPosition
+        });
         slidersNavigation(indexStart);
 
-        //var Interval = setInterval(rotation, 2*1000, banners);
+        var Interval = setInterval(rotation, 2*1000, banners);
         //setTimeout("rotation('test')",10);
 
 
@@ -71,21 +92,30 @@
 
         function rotation(b) {
             // reset
-            b.hide();
-            $('.sliders_navigation span').css('font-weight', 'normal');
+            //b.hide();
+            //$('.sliders_navigation span').css('font-weight', 'normal');
 
             //$('.slider_navigation span')
-            var randomIndex = Math.floor(Math.random() * (banners.length - 0) + 0);
+            //var randomIndex = Math.floor(Math.random() * (banners.length - 0) + 0);
+            indexStart = Math.floor(Math.random() * (banners.length - 0) + 0);
 
             //d ('element'+randomIndex, banners.get(randomIndex));
 
-            $(b[randomIndex]).show();
+            //$(b[randomIndex]).show();
 
 
-            d('img', b[randomIndex]);
-            d('span navi', $('.sliders_navigation span').get(randomIndex));
+            bannerPosition = -(indexStart * bannerWidth)
+            $('.slider_wrap').animate({
+                //marginLeft: parseInt($marginLefty.css('marginLeft'),10) == 0 ? $marginLefty.outerWidth() :0
+                left: bannerPosition
+            });
 
-            $($('.sliders_navigation span').get(randomIndex)).css('font-weight', 'bold');
+
+           // d('img', b[randomIndex]);
+           // d('span navi', $('.sliders_navigation span').get(randomIndex));
+
+            //$($('.sliders_navigation span').get(randomIndex)).css('font-weight', 'bold');
+            slidersNavigation(indexStart);
 
 
 
@@ -106,7 +136,7 @@
 
 
         $('.sliders_navigation span').click(function() {
-            //clearInterval(Interval);
+            clearInterval(Interval);
             // TODO move declaration index at top
             indexStart = $(this).index();
 
@@ -128,13 +158,13 @@
 
 
 
-           // setTimeout(Interval = setInterval(rotation, 2*1000, banners), 5000);
+            setTimeout(Interval = setInterval(rotation, 2*1000, banners), 5000);
 
         });
 
         $('.prev_element').click(function() {
             indexStart--;
-           // clearInterval(Interval);
+            clearInterval(Interval);
             var indexCurrent = bannerContainer.children('a:visible').index()-1;
             var indexPrev = indexCurrent-1;
             var indexNext = indexCurrent+1;
@@ -173,16 +203,18 @@
 
 
 
-            //setTimeout(Interval = setInterval(rotation, 2*1000, banners), 5000);
+
             d('bannerPosition', bannerPosition);
             d('bannerContainer', bannerContainer);
             d('visible', indexCurrent);
+            setTimeout(Interval = setInterval(rotation, 2*1000, banners), 5000);
         });
 
 
 
         $('.next_element').click(function() {
             indexStart++;
+            clearInterval(Interval);
 
             if (indexStart >= banners.length-1) {
                 //indexNext = banners.length-1;
@@ -212,9 +244,12 @@
 
             slidersNavigation(indexStart);
 
+
             bannerWidth = bannerWidth--;
+
             d('indexStart incr', indexStart);
             d('bannerPosition', bannerPosition);
+            setTimeout(Interval = setInterval(rotation, 2*1000, banners), 5000);
         });
 
 
@@ -257,74 +292,3 @@
     };
 
 })(jQuery);
-
-
-
-
-
-/*
-var slykoef = smargin / 10;
-var sc = $("#starconteiner");
-var ss = $(".slyshow");
-$("#starconteiner").width(400+smleft);
-//слайдер
-var p = sc.position();
-var myInterval = setInterval(triggerclick,ssec*1000)
-sc.append("<div class='slycomment'  style='opacity:0.5;filter:alpha(opacity=50);margin-left:"+(smleft+sborder)+"px'>"+$(".slyshow:last").attr('alt')+"</div>");
-ss.addClass("slyleft");
-ss.each(function(i){
-    $(".slyshow:eq("+i+")").css({"margin-left":""+(slykoef * i)+"0px","z-index":i});
-});
-ss.mouseover(function(){
-    if($(this).hasClass("slyactive")) return false
-    $(".slycomment").hide();
-    ss.removeClass("slyactive");
-    $(this).addClass("slyactive");
-
-    if($(this).hasClass("slyleft"))  {
-        $(".slycomment").css("margin-left",parseInt($(".slyactive").css("margin-left"))+sborder).text($(".slyactive").attr('alt'));
-
-        $(this).nextAll(".slyshow").each(function(i){
-            $(this).removeClass("slyleft").addClass("slyright");
-            m = 40+(slykoef * ($(this).index()-1))+"0";
-            $(this).stop().animate({"margin-left":""+m+"px"},function(){
-                $(".slycomment").fadeIn("slow");
-            });
-        });
-    }
-    else {
-        if($(this).hasClass("slyright"))  {
-
-            $(this).removeClass("slyright").addClass("slyleft");
-            $(this).prevAll(".slyshow").removeClass("slyright").addClass("slyleft");
-            m = (slykoef * ($(this).index()))+"0";
-            $(".slycomment").css("margin-left",parseInt(m)+sborder).text($(".slyactive").attr('alt'));
-            $(this).stop().animate({"margin-left":""+m+"px"},function(){
-                $(".slycomment").fadeIn("slow");
-            });
-
-            $(this).prevAll(".slyshow").each(function(i){
-                m = (slykoef * ($(this).index()))+"0";
-                $(this).stop().animate({"margin-left":""+m+"px"},function(){
-                    $(".slycomment").fadeIn("slow");
-                });
-
-            });
-        }
-    }
-
-});
-//интервал
-function triggerclick() {
-    ret = Math.floor(Math.random()*snum);
-    $(".slyshow:eq("+ret+")").trigger("mouseover");
-}
-sc.mousemove(function(){
-    clearInterval(myInterval)
-});
-sc.mouseleave(function(){
-    clearInterval(myInterval)
-    myInterval = setInterval(triggerclick,ssec*1000)
-});
-});
-*/
