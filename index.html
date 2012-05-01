@@ -12,25 +12,51 @@
         height: 100px;
         border: 1px solid gray;
     }
+
+    #slider {
+        overflow: hidden;
+        width: 1000px;
+        margin: 0 auto;
+        position: relative;
+        height: 230px;
+
+    }
+
+    .slider_wrap {
+
+        position: absolute;
+        width: 10000px;
+    }
+
+    .sliders_navigation {
+        position: absolute;
+        z-index: 2;
+        background-color: white;
+        border: 2px solid black;
+
+    }
+
 </style>
 
 
 <div id="slider">
-    <a href="" >
-        <img alt="" title="" src="images/img1.png" width="1000" height="230" border="0">
-    </a>
+    <div class="slider_wrap">
+        <a id="first_banner" href="" >
+            <img alt="" title="" src="images/img1.png" width="1000" height="230" border="0">
+        </a>
 
-    <a  href="" >
-        <img alt="" title="" src="images/img2.png" width="1000" height="230" border="0">
-    </a>
+        <a  href="" >
+            <img alt="" title="" src="images/img2.png" width="1000" height="230" border="0">
+        </a>
 
-    <a id="first_banner" href="" >
-        <img alt="" title="" src="images/img3.png" width="1000" height="230" border="0">
-    </a>
+        <a  href="" >
+            <img alt="" title="" src="images/img3.png" width="1000" height="230" border="0">
+        </a>
 
-    <a href="" >
-        <img alt="" title="" src="images/img4.png" width="1000" height="230" border="0">
-    </a>
+        <a href="" >
+            <img alt="" title="" src="images/img4.png" width="1000" height="230" border="0">
+        </a>
+    </div>
 </div>
 
 

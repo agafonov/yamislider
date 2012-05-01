@@ -1,14 +1,23 @@
 (function($){
     $.fn.yamislider = function(options) {
         var bannerContainer = $(this);
-        var banners = $(this).children('a');
+        // TODO Fix two call children()
+        var banners = $(this).children().children('a');
 
+        var bannerWidth = 1000;
+        var bannerPosition = 0;
+
+
+        d('banners: ', banners);
 
        // banners.get(1.hide();
 
 
         options = $.extend({
             background: 'red'
+
+
+
         }, options);
 
 
@@ -18,26 +27,27 @@
 
         bannerContainer.append('<span class="next_element">&gt;</span>');
 
-        bannerContainer.append('<div class="slider_all_navigation"></div>');
+        bannerContainer.append('<div class="sliders_navigation"></div>');
 
         for(var i=0; i<banners.length; i++) {
             d('banners i', banners[i]);
             var visible_index = i+1;
-            $('.slider_all_navigation').append('<span>'+ visible_index +'</span>');
+            $('.sliders_navigation').append('<span>'+ visible_index +'</span>');
         }
 
 
 
         // Element which need show first
         if (options.firstBanner) {
-            banners.not(options.firstBanner).hide();
+
+            //banners.not(options.firstBanner).hide();
 
 
             var indexStart = $(options.firstBanner).index();
 
 
             d('start inde', indexStart);
-            d('start el', $($('.slider_all_navigation span').get(indexStart-1)).css('font-weight', 'bold'));
+            d('start el', $($('.sliders_navigation span').get(indexStart-1)).css('font-weight', 'bold'));
 
 
 
@@ -46,45 +56,23 @@
             //banners.hide();
         }
         else {
-            banners.not(':first').hide();
+            //banners.not(':first').hide();
         }
 
 
-        //d('banners.length', banners.length);
+        slidersNavigation(indexStart);
 
-
-
-
-
-
-        /*
-        banners.each(function(index, element) {
-            d('index', index);
-            d('element', element);
-            d('this', this);
-        });
-        */
-
-
-
-
-
-
-
-        //bannerContainer.append('<div></div>');
-
-
-        var Interval = setInterval(rotation, 2*1000, banners);
+        //var Interval = setInterval(rotation, 2*1000, banners);
         //setTimeout("rotation('test')",10);
 
 
 
-        d('banners: ', banners);
+
 
         function rotation(b) {
             // reset
             b.hide();
-            $('.slider_all_navigation span').css('font-weight', 'normal');
+            $('.sliders_navigation span').css('font-weight', 'normal');
 
             //$('.slider_navigation span')
             var randomIndex = Math.floor(Math.random() * (banners.length - 0) + 0);
@@ -95,9 +83,9 @@
 
 
             d('img', b[randomIndex]);
-            d('span navi', $('.slider_all_navigation span').get(randomIndex));
+            d('span navi', $('.sliders_navigation span').get(randomIndex));
 
-            $($('.slider_all_navigation span').get(randomIndex)).css('font-weight', 'bold');
+            $($('.sliders_navigation span').get(randomIndex)).css('font-weight', 'bold');
 
 
 
@@ -117,32 +105,42 @@
         }
 
 
-        $('.slider_all_navigation span').click(function() {
-            clearInterval(Interval);
-            var index = $(this).index();
+        $('.sliders_navigation span').click(function() {
+            //clearInterval(Interval);
+            // TODO move declaration index at top
+            indexStart = $(this).index();
 
-            $('.slider_all_navigation span').css('font-weight', 'normal');
-            banners.hide();
-
-            $(this).css('font-weight', 'bold');
-            $(banners[index]).show();
-
+            //$('.sliders_navigation span').css('font-weight', 'normal');
+            //$(this).css('font-weight', 'bold');
+            //$(banners[index]).show();
 
 
 
 
-            setTimeout(Interval = setInterval(rotation, 2*1000, banners), 5000);
+
+            bannerPosition = -(indexStart * bannerWidth)
+            $('.slider_wrap').animate({
+                //marginLeft: parseInt($marginLefty.css('marginLeft'),10) == 0 ? $marginLefty.outerWidth() :0
+                left: bannerPosition
+            });
+
+            slidersNavigation(indexStart);
+
+
+
+           // setTimeout(Interval = setInterval(rotation, 2*1000, banners), 5000);
 
         });
 
         $('.prev_element').click(function() {
-            clearInterval(Interval);
+            indexStart--;
+           // clearInterval(Interval);
             var indexCurrent = bannerContainer.children('a:visible').index()-1;
             var indexPrev = indexCurrent-1;
             var indexNext = indexCurrent+1;
 
 
-            if (indexCurrent <= 0) {
+            if (indexStart <= 0) {
                 indexPrev = 0;
             }
             if (indexCurrent >= banners.length) {
@@ -152,15 +150,31 @@
             d('indexPrev', indexPrev);
             d('indexNext', indexNext);
 
-            $('.slider_all_navigation span').css('font-weight', 'normal');
-            banners.hide();
 
-            $(banners[indexPrev]).show();
-            $($('.slider_all_navigation span').get(indexPrev)).css('font-weight', 'bold');
+            //banners.hide();
 
+            //$(banners[indexPrev]).show();
 
 
-            setTimeout(Interval = setInterval(rotation, 2*1000, banners), 5000);
+
+            ///    var $marginLefty = $(this).next();
+
+
+            d('$(banners[indexPrev])', banners[indexStart]);
+
+            bannerPosition = bannerPosition+bannerWidth;
+
+            $('.slider_wrap').animate({
+                //marginLeft: parseInt($marginLefty.css('marginLeft'),10) == 0 ? $marginLefty.outerWidth() :0
+                left: bannerPosition
+            });
+
+            slidersNavigation(indexStart);
+
+
+
+            //setTimeout(Interval = setInterval(rotation, 2*1000, banners), 5000);
+            d('bannerPosition', bannerPosition);
             d('bannerContainer', bannerContainer);
             d('visible', indexCurrent);
         });
@@ -168,30 +182,49 @@
 
 
         $('.next_element').click(function() {
-            clearInterval(Interval);
-            var indexCurrent = bannerContainer.children('a:visible').index()-1;
-            var indexNext = indexCurrent+1;
+            indexStart++;
 
-            if (indexCurrent >= banners.length-1) {
-                indexNext = banners.length-1;
+            if (indexStart >= banners.length-1) {
+                //indexNext = banners.length-1;
+                // TODO fix end banners
+
             }
-            d('banners.length', banners.length);
-            d('indexNext', indexNext);
-            d('indexCurrent', indexCurrent);
-
-            $('.slider_all_navigation span').css('font-weight', 'normal');
-            banners.hide();
-
-            $(banners[indexNext]).show();
-            $($('.slider_all_navigation span').get(indexNext)).css('font-weight', 'bold');
+            //d('banners.length', banners.length);
+            //d('indexNext', indexNext);
+            //d('indexCurrent', indexStart);
 
 
-            setTimeout(Interval = setInterval(rotation, 2*1000, banners), 5000);
-            d('bannerContainer', bannerContainer);
-            d('visible', indexCurrent);
+
+            //banners.hide();
+
+            //$(banners[indexStart]).show();
+
+
+
+
+
+            bannerPosition = bannerPosition-bannerWidth;
+
+            $('.slider_wrap').animate({
+                //marginLeft: parseInt($marginLefty.css('marginLeft'),10) == 0 ? $marginLefty.outerWidth() :0
+                left: bannerPosition
+            });
+
+            slidersNavigation(indexStart);
+
+            bannerWidth = bannerWidth--;
+            d('indexStart incr', indexStart);
+            d('bannerPosition', bannerPosition);
         });
 
 
+        
+        function slidersNavigation(index) {
+            d('slidersNavigation called: ',index);
+
+            $('.sliders_navigation span').css('font-weight', 'normal');
+            $($('.sliders_navigation span').get(index)).css('font-weight', 'bold');
+        }
 
 
         //alert(myInterval);
