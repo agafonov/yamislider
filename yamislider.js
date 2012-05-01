@@ -1,96 +1,118 @@
+// TODO
+/*
+ Create  clean interval for mouse over on banner
+ Create auto define width each element
+ */
+
 (function($){
     $.fn.yamislider = function(options) {
         var bannerContainer = $(this);
-        var banners = $(this).children('a');
+        // TODO Fix two call children()
+        var banners = $(this).children().children('a');
+        var bannerPosition = 0;
 
         options = $.extend({
-            background: 'red'
+            firstBanner: '#first_banner', // selector which need show first
+            width: 1000 // width each element
         }, options);
 
+        var bannerWidth = options.width;
 
+        bannerContainer.prepend('<div class="sliders_navigation"></div>');
+        bannerContainer.prepend('<span class="next_element">&gt;</span>');
         bannerContainer.prepend('<span class="prev_element">&lt;</span>');
-        bannerContainer.append('<span class="next_element">&gt;</span>');
-        bannerContainer.append('<div class="slider_all_navigation"></div>');
 
+        $(this).css('margin', '0');
+        $(this).css('padding', '0');
+        $(this).css('position', 'relative');
+        $(this).css('overflow', 'hidden');
+
+        $(this).children('.slider_wrap').css('white-space', 'nowrap'); // TODO May using block element
+        $(this).children('.slider_wrap').css('position', 'absolute');
+
+        $(this).children('.sliders_navigation').css('position', 'absolute');
+        $(this).children('.sliders_navigation').css('z-index', '2');
+
+
+        // Generation navigations
         for(var i=0; i<banners.length; i++) {
             var visible_index = i+1;
-            $('.slider_all_navigation').append('<span>'+ visible_index +'</span>');
+            $('.sliders_navigation').append('<span>'+ visible_index +'</span>');
         }
 
         // Element which need show first
-        if (options.firstBanner) {
-            banners.not(options.firstBanner).hide();
-            var indexStart = $(options.firstBanner).index();
-        }
-        else {
-            banners.not(':first').hide();
-        }
+        var indexStart = $(options.firstBanner).index();
+
+        bannerPosition = -(indexStart * bannerWidth);
+        $('.slider_wrap').animate({
+            left: bannerPosition
+        });
+        slidersNavigation(indexStart);
 
         var Interval = setInterval(rotation, 2*1000, banners);
 
-        function rotation(b) {
-            // reset
-            b.hide();
-            $('.slider_all_navigation span').css('font-weight', 'normal');
 
-            var randomIndex = Math.floor(Math.random() * (banners.length - 0) + 0);
-            $(b[randomIndex]).show();
-            $($('.slider_all_navigation span').get(randomIndex)).css('font-weight', 'bold');
-        }
-
-        $('.slider_all_navigation span').click(function() {
+        $('.sliders_navigation span').click(function() {
             clearInterval(Interval);
-            var index = $(this).index();
+            indexStart = $(this).index();
+            bannerPosition = -(indexStart * bannerWidth);
 
-            $('.slider_all_navigation span').css('font-weight', 'normal');
-            banners.hide();
+            $('.slider_wrap').animate({
+                left: bannerPosition
+            });
+            slidersNavigation(indexStart);
 
-            $(this).css('font-weight', 'bold');
-            $(banners[index]).show();
             setTimeout(Interval = setInterval(rotation, 2*1000, banners), 5000);
         });
 
         $('.prev_element').click(function() {
+            if (indexStart <= 0) {
+                return false;
+            }
+
+            indexStart--;
             clearInterval(Interval);
-            var indexCurrent = bannerContainer.children('a:visible').index()-1;
-            var indexPrev = indexCurrent-1;
-            var indexNext = indexCurrent+1;
+            bannerPosition = bannerPosition+bannerWidth;
 
-            if (indexCurrent <= 0) {
-                indexPrev = 0;
-            }
-            if (indexCurrent >= banners.length) {
-                indexNext = banners.length ;
-            }
-
-            $('.slider_all_navigation span').css('font-weight', 'normal');
-            banners.hide();
-
-            $(banners[indexPrev]).show();
-            $($('.slider_all_navigation span').get(indexPrev)).css('font-weight', 'bold');
+            $('.slider_wrap').animate({
+                left: bannerPosition
+            });
+            slidersNavigation(indexStart);
 
             setTimeout(Interval = setInterval(rotation, 2*1000, banners), 5000);
         });
-
-
 
         $('.next_element').click(function() {
-            clearInterval(Interval);
-            var indexCurrent = bannerContainer.children('a:visible').index()-1;
-            var indexNext = indexCurrent+1;
-
-            if (indexCurrent >= banners.length-1) {
-                indexNext = banners.length-1;
+            if (indexStart >= banners.length-1) {
+                return false;
             }
 
-            $('.slider_all_navigation span').css('font-weight', 'normal');
-            banners.hide();
+            indexStart++;
+            clearInterval(Interval);
+            bannerPosition = bannerPosition-bannerWidth;
 
-            $(banners[indexNext]).show();
-            $($('.slider_all_navigation span').get(indexNext)).css('font-weight', 'bold');
-
+            $('.slider_wrap').animate({
+                left: bannerPosition
+            });
+            slidersNavigation(indexStart);
 
             setTimeout(Interval = setInterval(rotation, 2*1000, banners), 5000);
         });
+
+        function rotation(b) {
+            indexStart = Math.floor(Math.random() * (banners.length - 0) + 0);
+
+            bannerPosition = -(indexStart * bannerWidth)
+            $('.slider_wrap').animate({
+                left: bannerPosition
+            });
+
+            slidersNavigation(indexStart);
+        }
+
+        function slidersNavigation(index) {
+            $('.sliders_navigation span').css('font-weight', 'normal');
+            $($('.sliders_navigation span').get(index)).css('font-weight', 'bold');
+        }
     };
 })(jQuery);

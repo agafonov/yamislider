@@ -7,42 +7,40 @@
 <body>
 
 <style>
-    #test {
-        width: 100px;
-        height: 100px;
-        border: 1px solid gray;
-    }
+#slider {
+    width: 1000px;
+    margin: 0 auto;
+    height: 230px;
+}
 </style>
 
 
 <div id="slider">
-    <a href="" >
-        <img alt="" title="" src="images/img1.png" width="1000" height="230" border="0">
-    </a>
+    <div class="slider_wrap">
+        <a  href="" >
+            <img alt="" title="" src="images/img1.png" width="1000" height="230" border="0">
+        </a>
 
-    <a  href="" >
-        <img alt="" title="" src="images/img2.png" width="1000" height="230" border="0">
-    </a>
+        <a  href="" >
+            <img alt="" title="" src="images/img2.png" width="1000" height="230" border="0">
+        </a>
 
-    <a id="first_banner" href="" >
-        <img alt="" title="" src="images/img3.png" width="1000" height="230" border="0">
-    </a>
+        <a id="first_banner" href="" >
+            <img alt="" title="" src="images/img3.png" width="1000" height="230" border="0">
+        </a>
 
-    <a href="" >
-        <img alt="" title="" src="images/img4.png" width="1000" height="230" border="0">
-    </a>
+        <a  href="" >
+            <img alt="" title="" src="images/img4.png" width="1000" height="230" border="0">
+        </a>
+    </div>
 </div>
 
 
 <script type="text/javascript">
-
-
-
-
-$('#slider').yamislider({
-    background: "#fce",
-    firstBanner: '#first_banner' // selector which need show first
-});
+    $('#slider').yamislider({
+        firstBanner: '#first_banner', // selector which need show first
+        width: 1000 // width each element
+    });
 </script>
 
 </body>
